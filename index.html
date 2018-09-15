@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hangman</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="script.js"></script>
+	<style>
+	* { margin: 0;
+		padding: 0;
+	}
+
+	body {
+		padding: 20px;
+	}
+	.container {
+		width: 80%;
+		margin: auto;
+		padding: 40px;
+		border: 1px solid #e8e8e8;
+	}
+	ul {
+		list-style-type: none;
+	}
+	ul li {
+		display: inline-block;
+		font-size: 20px;
+		padding: 5px;
+		cursor: pointer;
+	}
+	ul li.disabled {
+		color: #ccc;
+		text-decoration: line-through;
+		cursor: auto;
+	}
+	#lives span{
+		font-size: 30px;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+	<div id='word'></div>
+	<div id='alphabetContainer'>
+		<ul>
+			<li id="a" class="vowel">a</li>
+			<li id="b">b</li>
+			<li id="c">c</li>
+			<li id="d">d</li>
+			<li id="e" class="vowel">e</li>
+			<li id="f">f</li>
+			<li id="g">g</li>
+			<li id="h">h</li>
+			<li id="i" class="vowel">i</li>
+			<li id="j">j</li>
+			<li id="k">k</li>
+			<li id="l">l</li>
+			<li id="m">m</li>
+			<li id="n">n</li>
+			<li id="o" class="vowel">o</li>
+			<li id="p">p</li>
+			<li id="q">q</li>
+			<li id="r">r</li>
+			<li id="s">s</li>
+			<li id="t">t</li>
+			<li id="u" class="vowel">u</li>
+			<li id="v">v</li>
+			<li id="w">w</li>
+			<li id="x">x</li>
+			<li id="y">y</li>
+			<li id="z">z</li>
+		</ul>
+	</div>
+	<div id="wordGuessContainer">Guess the whole word: <input type="text" name="wordGuess" id="wordGuess"/><button id="guessing">guess</button></div>
+	<div id="lives">Lives <span></span></div>
+	<a id="newWord" href="#">New Word</a>
+	<a id="loser" href="#">I give up</a>
+	<br/><br/>
+	<div class="hideOnStart"><input type="checkbox" name="disVowel" id="disVowel"/><label id="disVowelLabel">Disallow guessing vowels</label></div>
+	<br/>
+	<div class="hideOnStart"><input type="number" name="maxLength" id="maxLength" min="4" max="13"/><label id="maxLengthLabel">Maximum length of word (4 - 13)</label></div>
+	</div>
+</body>
+</html>
