@@ -8,7 +8,7 @@
 var chosenWord;
 var letterCount;
 var data;
-var bloodyCrappyArray = ["number", "part", "quantities", "amount", "amounts", "extent", "proportion", 
+/*var bloodyCrappyArray = ["number", "part", "quantities", "amount", "amounts", "extent", "proportion", 
 						"areas", "cities", "area", "portion", "measure", "group", "size", "quantity", 
 						"majority", "room", "doses", "body", "sums", "score", "family", "eyes", "percentage", 
 						"companies", "volume", "population", "firms", "house", "sum", "city", "force", 
@@ -18,7 +18,7 @@ var bloodyCrappyArray = ["number", "part", "quantities", "amount", "amounts", "e
 						"blocks", "crowd", "piece", "populations", "stones", "pieces", "projects", "town", 
 						"sections", "hall", "audience", "houses", "enterprises", "farms", "portions", "sample", 
 						"table", "plants", "buildings", "windows", "circle", "head", "rooms", "letters", 
-						"stone"];
+						"stone"];*/
 
 function createGame(){
     return {
@@ -61,9 +61,9 @@ function createGame(){
 						console.log(chosenWord);
 	    			}
 				} 
-				//else {
-			    	////console.log('Error fetching data. Refresh page.');
-				////}
+				else {
+			    	alert('Error fetching data. Refresh page.');
+				}
 
 				// Replacing each letter with an underscore
        			for(i = 0; i < chosenWord.length; i++) {
@@ -84,7 +84,7 @@ function createGame(){
 			$('.vowel').addClass("disabled");
         },
 
-        newWord : function(game, lives, livesLeft, obj, loserButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength){
+        newWord : function(game, lives, livesLeft, obj, loserButton, newGameButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength, hintButton){
     		// Call the begin function in CreateGame
 		    game.begin();
 		    // Update the Lives box
@@ -102,9 +102,10 @@ function createGame(){
 			alphabetContainer.show();
 			wordGuessContainer.show();
 			livesContainer.show();
+			hintButton.show();
         },
 
-        letterClick : function(event, livesLeft, lives){
+        letterClick : function(event, livesLeft, lives, loserButton, newGameButton){
         	// Store the letter object
 			var letterObj = event;
 			// Get the letter value/string from that object
@@ -135,7 +136,7 @@ function createGame(){
 
 					// Get the corresponding ID to the position and reveal the letter
 					$('#'+letterPos).text(letterVal);
-					}
+				}
 
 				// Diable the letter so it can't be picked again
 				letterObj.addClass('disabled');
@@ -153,6 +154,8 @@ function createGame(){
 				// If lettersLeft now equals 0 that means you've guessed all the letters and won
 				if (lettersLeft == 0){
 					alert('YOU WON');
+					loserButton.hide();
+					newGameButton.show();
 				}
 
 			}
@@ -180,7 +183,7 @@ function createGame(){
 			return livesLeft;
         },
 
-        guess : function(wordGuessInput, livesLeft, lives){
+        guess : function(wordGuessInput, livesLeft, lives, loserButton, newGameButton){
         	// Get the guess from the input box
 			var yourGuess = wordGuessInput.val();
 			
@@ -191,6 +194,8 @@ function createGame(){
 				word.children().remove();
 				word.text(chosenWord);
 				alert('YOU WIN');
+				loserButton.hide();
+				newGameButton.show();
 			}
 			else {
 				livesLeft --;
@@ -211,7 +216,10 @@ function createGame(){
 $().ready(function(){
 	// Grabs the elements to work with
 	var newWordButton = $('#newWord');
+	var newGameButton = $('#newGame');
 	var loserButton = $('#loser');
+	var hintButton = $('#hintButton');
+	var hint = $('#hint');
 	var alphabetContainer = $('#alphabetContainer');
 	var wordGuessContainer = $('#wordGuessContainer');
 	var wordGuessInput = $('#wordGuess');
@@ -231,10 +239,13 @@ $().ready(function(){
 	alphabetContainer.hide();
 	wordGuessContainer.hide();
 	livesContainer.hide();
+	newGameButton.hide();
+	hintButton.hide();
+	hint.hide();
 
 	// On click of the new word button
     newWordButton.on('click', function(){
-    	game.newWord(game, lives, livesLeft, $(this), loserButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength);
+    	game.newWord(game, lives, livesLeft, $(this), loserButton, newGameButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength, hintButton);
     });
 
     loserButton.on('click', function(){
@@ -243,14 +254,23 @@ $().ready(function(){
     	location.reload();
     });
 
+    newGameButton.on('click', function(){
+    	// Lazy way of resetting the game
+    	location.reload();
+    });
+
+    hintButton.on('click', function(){
+    	hint.show();
+    });
+
     alphabetContainer.on('click', 'li', function(){
     	// Run letter click function passing in objects which will be needed
     	// Assign the return of the function to livesLeft
-    	livesLeft = game.letterClick($(this), livesLeft, lives, disVowel);
+    	livesLeft = game.letterClick($(this), livesLeft, lives, loserButton, newGameButton);
     });
 
     // Button for if you want to type and guess the answer
 	wordGuessButton.on('click', function(){
-		livesLeft = game.guess(wordGuessInput, livesLeft, lives);
+		livesLeft = game.guess(wordGuessInput, livesLeft, lives, loserButton, newGameButton);
 	});
 });
