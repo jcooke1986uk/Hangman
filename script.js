@@ -1,28 +1,37 @@
 //https://www.datamuse.com/api/
 
-//Feedback:
-// Keep variables inside the main game function
-// Do not declare variables inside the function.  Do it outside and pass them in.
 
+function createGame(newWordButton, loserButton, newGameButton, alphabetContainer,
+					wordGuessContainer, wordGuessButton, livesContainer, wordGuessInput,
+					lives, disVowel){
 
 var chosenWord;
 var letterCount;
 var data;
-/*var bloodyCrappyArray = ["number", "part", "quantities", "amount", "amounts", "extent", "proportion", 
-						"areas", "cities", "area", "portion", "measure", "group", "size", "quantity", 
-						"majority", "room", "doses", "body", "sums", "score", "family", "eyes", "percentage", 
-						"companies", "volume", "population", "firms", "house", "sum", "city", "force", 
-						"degree", "share", "corporations", "volumes", "intestine", "towns", "families", 
-						"building", "variety", "increase", "masses", "mass", "company", "estates", "bowl", 
-						"vessels", "tree", "army", "trees", "collection", "tracts", "organisations", "bodies", 
-						"blocks", "crowd", "piece", "populations", "stones", "pieces", "projects", "town", 
-						"sections", "hall", "audience", "houses", "enterprises", "farms", "portions", "sample", 
-						"table", "plants", "buildings", "windows", "circle", "head", "rooms", "letters", 
-						"stone"];*/
 
-function createGame(){
     return {
         livesLeft : 10,
+
+        newWord : function(game, livesLeft, obj){
+    		// Call the begin function in CreateGame
+		    game.begin();
+		    // Update the Lives box
+		    lives.text(livesLeft);
+		    // Hide new word button
+		    obj.hide();
+
+		    $('.hideOnStart').hide();
+
+		    if(disVowel.is(':checked') == true){
+		    	game.noVowels();
+		    }
+		    // Show relevant game features
+		    loserButton.show();
+			alphabetContainer.show();
+			wordGuessContainer.show();
+			livesContainer.show();
+        },
+
         begin : function(){
 
 			var maxLength = $('#maxLength').val();
@@ -44,16 +53,21 @@ function createGame(){
 				// Checking successful request
 				if (request.status >= 200 && request.status < 400) {
 					if (maxLength != ""){
-						if (maxLength >= 4){
+						if (maxLength >= 4 && maxLength <=13){
 							// Getting a random object from the JSON data and accessing its 'word' property
 							do {
 								chosenWord = data[Math.floor(Math.random()*data.length)].word;
 								// There must be a better way of doing this
 							}
-							while (chosenWord.length != maxLength)
+							while (chosenWord.length > maxLength)
+	    					// Left this in so we can cheat if we need to
+							console.log(chosenWord);
 	    				}
-    					// Left this in so we can cheat if we need to
-						console.log(chosenWord);
+	    				else {
+	    					alert('Maximum length must be between 4 and 13');
+	    					//return false;
+	    					location.reload();
+	    				}
 	    			}
 	    			else {
 	    				chosenWord = data[Math.floor(Math.random()*data.length)].word;
@@ -62,7 +76,7 @@ function createGame(){
 	    			}
 				} 
 				else {
-			    	alert('Error fetching data. Refresh page.');
+			    	console.log('Error fetching data. Refresh page.');
 				}
 
 				// Replacing each letter with an underscore
@@ -84,28 +98,8 @@ function createGame(){
 			$('.vowel').addClass("disabled");
         },
 
-        newWord : function(game, lives, livesLeft, obj, loserButton, newGameButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength, hintButton){
-    		// Call the begin function in CreateGame
-		    game.begin();
-		    // Update the Lives box
-		    lives.text(livesLeft);
-		    // Hide new word button
-		    obj.hide();
 
-		    $('.hideOnStart').hide();
-
-		    if(disVowel.is(':checked') == true){
-		    	game.noVowels();
-		    }
-		    // Show relevant game features
-		    loserButton.show();
-			alphabetContainer.show();
-			wordGuessContainer.show();
-			livesContainer.show();
-			hintButton.show();
-        },
-
-        letterClick : function(event, livesLeft, lives, loserButton, newGameButton){
+        letterClick : function(event, livesLeft){
         	// Store the letter object
 			var letterObj = event;
 			// Get the letter value/string from that object
@@ -136,7 +130,7 @@ function createGame(){
 
 					// Get the corresponding ID to the position and reveal the letter
 					$('#'+letterPos).text(letterVal);
-				}
+					}
 
 				// Diable the letter so it can't be picked again
 				letterObj.addClass('disabled');
@@ -170,20 +164,22 @@ function createGame(){
 				// Check if you have zero lives left
 				if (livesLeft == 0) {
 					// If you have zero left you are a loser
-					alert('TELL YOUR MOTHER SHE RAISED A LOSER');
+					alert('I\'M SORRY, YOU LOSE');
 					// Get the word element. This has to be done here so it is the most up to date instance of the element
 					word = $('#word');
 					// Remove all current contents
 					word.children().remove();
 					// Reveal the word
 					word.text(chosenWord);
+					loserButton.hide();
+					newGameButton.show();
 				}
 				
 			}
 			return livesLeft;
         },
 
-        guess : function(wordGuessInput, livesLeft, lives, loserButton, newGameButton){
+        guess : function(wordGuessInput, livesLeft){
         	// Get the guess from the input box
 			var yourGuess = wordGuessInput.val();
 			
@@ -201,10 +197,12 @@ function createGame(){
 				livesLeft --;
 		    	lives.text(livesLeft);
 				if (livesLeft == 0) {
-					alert('TELL YOUR MOTHER SHE RAISED A LOSER');
+					alert('I\'M SORRY, YOU LOSE');
 					word = $('#word');
 					word.children().remove();
 					word.text(chosenWord);
+					loserButton.hide();
+					newGameButton.show();
 				}
 			}
 			return livesLeft;
@@ -216,61 +214,52 @@ function createGame(){
 $().ready(function(){
 	// Grabs the elements to work with
 	var newWordButton = $('#newWord');
-	var newGameButton = $('#newGame');
 	var loserButton = $('#loser');
-	var hintButton = $('#hintButton');
-	var hint = $('#hint');
+	var newGameButton = $('#newGame');
 	var alphabetContainer = $('#alphabetContainer');
 	var wordGuessContainer = $('#wordGuessContainer');
-	var wordGuessInput = $('#wordGuess');
 	var wordGuessButton = $('#guessing');
 	var livesContainer = $('#lives');
+	var wordGuessInput = $('#wordGuess');
 	var lives = $('#lives span');
 	var disVowel = $('#disVowel');
-	var disVowelLabel = $('#disVowelLabel');
-	var maxLengthContainer = $('#maxLengthContainer');
+
+	// Define a new instance of the game passing in all of the stored elements
+	var game = createGame(newWordButton, loserButton, newGameButton, alphabetContainer, wordGuessContainer, wordGuessButton, livesContainer, wordGuessInput, lives, disVowel);
 	
-	// Define a new instance of the game
-	var game = createGame();
 	// Store the amount of lives defined in the game
 	var livesLeft = game.livesLeft;
 
 	loserButton.hide();
+	newGameButton.hide();
 	alphabetContainer.hide();
 	wordGuessContainer.hide();
 	livesContainer.hide();
-	newGameButton.hide();
-	hintButton.hide();
-	hint.hide();
 
 	// On click of the new word button
     newWordButton.on('click', function(){
-    	game.newWord(game, lives, livesLeft, $(this), loserButton, newGameButton, alphabetContainer, wordGuessContainer, livesContainer, disVowel, disVowelLabel, maxLength, hintButton);
+    	game.newWord(game, livesLeft, $(this));
+    });
+
+   	// On click of the new game button
+    newGameButton.on('click', function(){
+    	location.reload();
     });
 
     loserButton.on('click', function(){
-    	alert('YOU ARE A LOSER');
+    	alert('I\'M SORRY, YOU LOSE');
     	// Lazy way of resetting the game
     	location.reload();
-    });
-
-    newGameButton.on('click', function(){
-    	// Lazy way of resetting the game
-    	location.reload();
-    });
-
-    hintButton.on('click', function(){
-    	hint.show();
     });
 
     alphabetContainer.on('click', 'li', function(){
     	// Run letter click function passing in objects which will be needed
     	// Assign the return of the function to livesLeft
-    	livesLeft = game.letterClick($(this), livesLeft, lives, loserButton, newGameButton);
+    	livesLeft = game.letterClick($(this), livesLeft, disVowel);
     });
 
     // Button for if you want to type and guess the answer
 	wordGuessButton.on('click', function(){
-		livesLeft = game.guess(wordGuessInput, livesLeft, lives, loserButton, newGameButton);
+		livesLeft = game.guess(wordGuessInput, livesLeft);
 	});
 });

@@ -1,0 +1,74 @@
+.hangman-container {
+	font-size: 16px;
+	width: 80%;
+	margin: auto;
+	padding: 40px;
+	border: 1px solid #6666ab;
+}
+.hangman-container h1 {
+	text-align: center;
+}
+.hangman-container .subtitle {
+	font-size: 24px;
+	text-align: center;
+	font-weight: bold;
+}
+.hangman-container ul {
+	list-style-type: none;
+}
+.hangman-container ul li {
+	display: inline-block;
+	font-size: 20px;
+	padding: 5px;
+	cursor: pointer;
+}
+.hangman-container ul li.disabled {
+	color: #ccc;
+	text-decoration: line-through;
+	cursor: auto;
+}
+.hangman-container #lives span{
+	font-size: 50px;
+    vertical-align: middle;
+}
+.hangman-container .buttons {
+	text-align: center;
+	padding: 50px 0;
+	clear: both;
+}
+.hangman-container .button {
+	background: #4646a5;
+	border-radius: 2px;
+	color: #FFF;
+	padding: 10px 20px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+.hangman-container .button:hover {
+	background: #6666ab;
+}
+.hangman-container input {
+	border: 1px solid #6666ab;
+    padding: 5px 20px;
+}
+.hangman-container .options {
+	padding: 50px 0;
+}
+.hangman-container .options div,.hangman-container #wordGuessContainer, .hangman-container #lives {
+	width: 100%;
+	padding: 20px 0;
+}
+.hangman-container #word, .hangman-container #alphabetContainer {
+	text-align: center;
+	font-size: 22px;
+}
+.hangman-container #wordGuessContainer {
+	padding: 35px 0;
+}
+
+@media(min-width: 768px){
+	.hangman-container .options div, .hangman-container #wordGuessContainer, .hangman-container #lives {
+		width: 50%;
+		float: left;
+	}
+}
