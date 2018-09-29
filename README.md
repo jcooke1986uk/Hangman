@@ -1,2 +1,2 @@
 # Hangman
-In progress Hangman style guess a word game
+Hangman style guess a word game
